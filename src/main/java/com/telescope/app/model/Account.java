@@ -11,23 +11,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Customer {
-
-
+public class Account {
     @Id
     @GeneratedValue
     private long id;
 
+    @Column
+    private long companyId;
 
     @Column
-    private String firstName;
+    private String code;
 
     @Column
-    private String lastName;
-
-
-    @Override
-    public String toString() {
-        return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
-    }
+    private String name;
 }

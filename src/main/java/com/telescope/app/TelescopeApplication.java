@@ -12,25 +12,30 @@ import org.springframework.context.event.EventListener;
 import java.util.List;
 
 @SpringBootApplication
-public class DemoApplication {
+public class TelescopeApplication {
 
-    private final Logger logger = LoggerFactory.getLogger(DemoApplication.class);
+    private final Logger logger = LoggerFactory.getLogger(TelescopeApplication.class);
 
     private final CustomerRepository repository;
+    private final DbSeeder dbSeeder;
 
-    public DemoApplication(CustomerRepository repository) {
+    public TelescopeApplication(CustomerRepository repository, DbSeeder dbSeeder) {
         this.repository = repository;
+        this.dbSeeder = dbSeeder;
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(TelescopeApplication.class, args);
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void runAfterStartup() {
+    public void runAfterStartup() throws Exception {
         queryAllCustomers();
         createCustomer();
         queryAllCustomers();
+
+        dbSeeder.run();
+        dbSeeder.queryAllData();
     }
 
     private void createCustomer() {
@@ -45,5 +50,6 @@ public class DemoApplication {
         List<Customer> allCustomers = this.repository.findAll();
         logger.info(String.format("Number of customers: %d", allCustomers.size()));
     }
+
 
 }

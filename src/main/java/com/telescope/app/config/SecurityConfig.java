@@ -43,11 +43,11 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 //                .hasRole("user")
 //                .anyRequest()
 //                .permitAll();
-        http.authorizeRequests()
-                .antMatchers()
-                .hasRole("user")
-                .anyRequest()
-                .permitAll();
+        http.authorizeRequests().anyRequest().permitAll();
+//                .antMatchers()
+//                .hasRole("user")
+//                .anyRequest()
+//                .permitAll();
         http.csrf().disable();
     }
 }
