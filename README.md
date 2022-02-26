@@ -1,12 +1,12 @@
-# telescope-app-dashboard-server
-Telescope app service for dashboard
 
-Local setup
+#Telescope app service for dashboard
+
+##Local setup
 
 1/ Start the KeyClock server in a docker container
 
 ```
-docker run -p 8090:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:17.0.0 start-dev
+docker-compose -f keycloak-docker-compose.yml up
 ```
 
 2/ Build the spring boot app
@@ -27,16 +27,41 @@ docker-compose build
 docker-compose up
 ```
 
-5/ To remove the container
+5/ Check running containers
+
+```
+docker container ls
+```
+
+6/ To test it in local, add host entry as follows.
+
+```
+vim /etc/hosts
+127.0.0.1 keycloak
+```
+
+7/ Get access token from keycloak service
+
+```
+curl --location --request POST 'http://keycloak:8080/auth/realms/telescope/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=login-app' \
+--data-urlencode 'username=<user-name>' \
+--data-urlencode 'password=<password>' \
+--data-urlencode 'grant_type=password'
+```
+
+8/ Access the Telescope app service using the access token
+
+```
+curl --location --request GET 'http://localhost:8090/dashboard/companies' \
+--header 'Authorization: Bearer <ACCESS_TOKEN>'
+```
+
+9/ To remove the container
 
 ```
 docker-compose down
-```
-
-6/ To test
-
-```
-curl --location --request GET 'http://localhost:8080/hello/user' \
---header 'Authorization: Bearer <Auth-Token>' 
+docker-compose -f keycloak-docker-compose.yml down
 ```
 

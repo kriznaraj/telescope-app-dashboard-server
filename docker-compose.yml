@@ -6,20 +6,33 @@ services:
     build: .
     container_name: app
     ports:
-      - "8080:8080"
+      - "8090:8080"
     depends_on:
       - db
+    networks:
+      - app_tc-net
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/telescope-admin
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/telescope
       - SPRING_DATASOURCE_USERNAME=telescope-admin
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - keycloak.auth-server-url=http://keycloak:8080/auth
+      - keycloak.realm=telescope
+      - keycloak.resource=login-app
+      - keycloak.public-client=true
 
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
     expose:
       - 5432
+    networks:
+      - app_tc-net
     environment:
       - POSTGRES_USER=telescope-admin
       - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=telescope
+
+networks:
+  app_tc-net:
+    external: true
