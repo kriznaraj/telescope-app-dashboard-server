@@ -1,6 +1,5 @@
 package com.telescope.app.config;
 
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
@@ -17,16 +16,11 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     // Submits the KeycloakAuthenticationProvider to the AuthenticationManager
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
-
-//    @Bean
-//    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
-//        return new KeycloakSpringBootConfigResolver();
-//    }
 
     // Specifies the session authentication strategy
     @Bean
@@ -38,16 +32,11 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-//        http.authorizeRequests()
-//                .antMatchers("/customers*", "/users*")
-//                .hasRole("user")
-//                .anyRequest()
-//                .permitAll();
-        http.authorizeRequests().anyRequest().permitAll();
-//                .antMatchers()
-//                .hasRole("user")
-//                .anyRequest()
-//                .permitAll();
+        http.authorizeRequests()
+                .antMatchers("/test/*").permitAll()
+                .antMatchers("/tpv/*", "/ticket/*").hasAnyRole("user")
+                .anyRequest()
+                .permitAll();
         http.csrf().disable();
     }
 }
